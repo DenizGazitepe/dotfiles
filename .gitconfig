@@ -1,0 +1,21 @@
+[user]
+	email = dg102@hdm-stuttgart.de
+	name = Deniz Gazitepe
+
+[alias]
+	br = branch
+	bra = branch -a
+	cge = config --global --edit
+	co = checkout
+	ci = commit
+	amend = commit --amend --no-edit
+	st = status -s
+	sta = status
+	undo = reset --soft HEAD~1
+	rh = reset HEAD
+	aa = add -A
+	pr = pull --rebase
+	
+[diff "lockb"]
+	textconv = bun
+	binary = true
