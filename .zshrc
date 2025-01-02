@@ -20,8 +20,11 @@ autoload -Uz promptinit
 promptinit
 prompt adam1
 
+autoload -U compinit
+compinit
+
 # Oh My Posh
-eval "$(oh-my-posh init zsh --config ~/oh-my-posh/zen.toml)"
+eval "$(oh-my-posh init zsh --config ~/.config/omp/zen.toml)"
 
 # History
 HISTSIZE=5000
@@ -40,6 +43,7 @@ setopt hist_find_no_dups
 export CARAPACE_BRIDGES='zsh,fish,bash,inshellisense' # optional
 zstyle ':completion:*' format $'\e[2;37mCompleting %d\e[m'
 source <(carapace _carapace)
+
 
 zstyle ':fzf-tab:complete:cd:*' fzf-preview 'ls --color $realpath'
 zstyle ':fzf-tab:complete:__zoxide_z:*' fzf-preview 'ls --color $realpath'
