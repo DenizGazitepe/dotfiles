@@ -3,4 +3,4 @@
 set -euo pipefail
 
 omarchy pkg add stow bat git-delta eza fzf zoxide
-omarchy pkg aur add oh-my-posh-bin
+omarchy pkg aur add oh-my-posh
