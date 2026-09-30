@@ -32,35 +32,51 @@
 		fi; \
 		git commit --amend --no-edit; \
 	}; f"
-[init]
-	defaultBranch = master
+
+[log]
+	abbrevCommit = true 		# Shorten commit hashes
+
 [pull]
-	rebase = true 			 # Rebase (instead of merge) on pull
+	rebase = true 			 	# Rebase (instead of merge) on pull
+
+[rebase]
+	autoStash = true		 	# Stash changes before rebasing
+
 [push]
-	autoSetupRemote = true   # Automatically set upstream branch on push
+	autoSetupRemote = true   	# Automatically set upstream branch on push
+
 [diff]
-	algorithm = histogram    # Clearer diffs on moved/edited lines
-	colorMoved = plain       # Highlight moved blocks in diffs
-	mnemonicPrefix = true    # More intuitive refs in diff output
+	algorithm = histogram    	# Clearer diffs on moved/edited lines
+	colorMoved = plain       	# Highlight moved blocks in diffs
+	mnemonicPrefix = true    	# More intuitive refs in diff output
+
 [core]
-	pager = delta                # Syntax-highlight diffs, logs, and shows
+	pager = delta               # Syntax-highlight diffs, logs, and shows
+
 [interactive]
 	diffFilter = delta --color-only
+
 [delta]
 	navigate = true              # n and N jump between diff sections
 	line-numbers = true
 	syntax-theme = ansi          # Follow the terminal palette, same as bat
+
 [commit]
 	verbose = true           # Include diff comment in commit message template
+
 [column]
 	ui = auto 			     # Output in columns when possible
+
 [branch]
 	sort = -committerdate    # Sort branches by most recent commit first
+
 [tag]
 	sort = -version:refname  # Sort version numbers as you would expect
+
 [rerere]
 	enabled = true           # Record and reuse conflict resolutions
 	autoupdate = true        # Apply stored conflict resolutions automatically
+
 [user]
 	name = Deniz Gazitepe
 	email = deniz.gazitepe@gmail.com
