@@ -4,7 +4,34 @@
 	co = checkout
 	br = branch
 	ci = commit
-	st = status
+	st = status --short --branch
+	sta = status
+	# Soft-reset the last commit when no remote has it; changes stay staged.
+	undo = "!f() { \
+		git rev-parse --verify HEAD >/dev/null || exit 1; \
+		if ! git rev-parse --verify --quiet 'HEAD~1' >/dev/null; then \
+			echo 'undo: the root commit cannot be undone' >&2; \
+			exit 1; \
+		fi; \
+		if ! git rev-list -1 HEAD --not --remotes | grep -q .; then \
+			echo 'undo: refusing to rewrite a commit that is already on a remote' >&2; \
+			exit 1; \
+		fi; \
+		git reset --soft 'HEAD~1'; \
+	}; f"
+	# Fold the index into the last commit, keeping its message, when no remote has it.
+	amend = "!f() { \
+		git rev-parse --verify HEAD >/dev/null || exit 1; \
+		if ! git rev-list -1 HEAD --not --remotes | grep -q .; then \
+			echo 'amend: refusing to rewrite a commit that is already on a remote' >&2; \
+			exit 1; \
+		fi; \
+		if git diff --cached --quiet; then \
+			echo 'amend: no staged changes' >&2; \
+			exit 1; \
+		fi; \
+		git commit --amend --no-edit; \
+	}; f"
 [init]
 	defaultBranch = master
 [pull]
@@ -15,6 +42,14 @@
 	algorithm = histogram    # Clearer diffs on moved/edited lines
 	colorMoved = plain       # Highlight moved blocks in diffs
 	mnemonicPrefix = true    # More intuitive refs in diff output
+[core]
+	pager = delta                # Syntax-highlight diffs, logs, and shows
+[interactive]
+	diffFilter = delta --color-only
+[delta]
+	navigate = true              # n and N jump between diff sections
+	line-numbers = true
+	syntax-theme = ansi          # Follow the terminal palette, same as bat
 [commit]
 	verbose = true           # Include diff comment in commit message template
 [column]
