@@ -1,4 +1,6 @@
---theme="Catppuccin Mocha"
+# Follow the active Omarchy theme. `omarchy theme set` recolors the
+# terminal's ANSI palette, and bat's ansi theme paints syntax with it.
+--theme=ansi
 
 --italic-text=always
 
