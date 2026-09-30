@@ -7,7 +7,7 @@ DOTFILES="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 cd "$DOTFILES"
 
 packages=()
-for name in bash git bat hypr shell foot starship; do
+for name in bash git bat hypr shell foot; do
   [[ -d $name ]] && packages+=("$name")
 done
 
