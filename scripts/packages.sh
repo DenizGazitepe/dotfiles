@@ -3,3 +3,4 @@
 set -euo pipefail
 
 omarchy pkg add stow bat eza fzf zoxide
+omarchy pkg aur add oh-my-posh-bin

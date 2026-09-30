@@ -21,3 +21,18 @@ source "$OMARCHY_PATH/default/bash/rc"
 
 # Cursor CLI, matching c/cx/cy auto-approve shortcuts
 alias ca='cursor-agent --force --approve-mcps'
+
+# Oh My Posh owns the prompt. Omarchy starts Starship inside the rc sourced
+# above; give back the hook Starship replaced, then start Oh My Posh.
+if command -v oh-my-posh >/dev/null; then
+  if [[ -n ${STARSHIP_PROMPT_COMMAND+x} ]]; then
+    if [[ -n $STARSHIP_PROMPT_COMMAND ]]; then
+      PROMPT_COMMAND=$STARSHIP_PROMPT_COMMAND
+    else
+      unset PROMPT_COMMAND
+    fi
+  fi
+  export OMP_CACHE_DIR="${XDG_CACHE_HOME:-$HOME/.cache}/oh-my-posh"
+  mkdir -p "$OMP_CACHE_DIR"
+  eval "$(oh-my-posh init bash --config "${XDG_CONFIG_HOME:-$HOME/.config}/omp/zen.toml" --print)"
+fi
