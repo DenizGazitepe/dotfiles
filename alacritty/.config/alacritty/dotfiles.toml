@@ -1,0 +1,7 @@
+# Imported by Omarchy's ~/.config/alacritty/alacritty.toml
+# (scripts/terminal-includes.sh). Alacritty applies imports before the
+# importing file, so a key set in both places takes Omarchy's value.
+
+[terminal]
+# New windows run zsh. Launches with a command still run it directly.
+shell = "/usr/bin/zsh"
