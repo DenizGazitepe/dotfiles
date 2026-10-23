@@ -33,6 +33,9 @@
 		git commit --amend --no-edit; \
 	}; f"
 
+[init]
+	defaultBranch = master   # Branch name for new repositories
+
 [log]
 	abbrevCommit = true 		# Shorten commit hashes
 
