@@ -7,7 +7,7 @@ DOTFILES="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 cd "$DOTFILES"
 
 packages=()
-for name in bash git bat omp zsh hypr shell ghostty kitty foot alacritty; do
+for name in bash git bat omp zsh hypr shell ghostty kitty foot alacritty superfile; do
   [[ -d $name ]] && packages+=("$name")
 done
 
@@ -18,6 +18,7 @@ fi
 
 stow --no-folding --target "$HOME" --verbose "${packages[@]}"
 "$DOTFILES/scripts/terminal-includes.sh"
+"$DOTFILES/scripts/superfile-theme.sh"
 
 command -v hyprctl >/dev/null && hyprctl reload
 command -v omarchy >/dev/null && omarchy restart terminal
