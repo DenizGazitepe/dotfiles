@@ -2,7 +2,7 @@
 # Optional. Run by hand to install the packages this overlay expects.
 set -euo pipefail
 
-omarchy pkg add stow bat git-delta eza fzf zoxide
+omarchy pkg add stow bat git-delta eza fzf zoxide superfile
 omarchy pkg aur add oh-my-posh
 
 # Zsh for terminals; bash stays Omarchy's login shell.
