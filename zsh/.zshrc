@@ -8,6 +8,11 @@
 [[ -r /usr/share/omarchy/default/bash/env-bootstrap ]] &&
   emulate sh -c '. /usr/share/omarchy/default/bash/env-bootstrap'
 
+# CLIs from `bun add -g`. Bun keeps them under $BUN_INSTALL, else
+# $XDG_CACHE_HOME/.bun, else ~/.bun.
+typeset -U path
+path+=("${BUN_INSTALL:-${XDG_CACHE_HOME:-$HOME}/.bun}/bin")
+
 export EDITOR="${EDITOR:-omarchy-launch-editor --inline}"
 export SUDO_EDITOR="$EDITOR"
 export BROWSER="${BROWSER:-omarchy-launch-browser}"
