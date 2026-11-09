@@ -20,8 +20,12 @@ HISTFILE="${XDG_STATE_HOME:-$HOME/.local/state}/zsh/history"
 HISTSIZE=32768
 SAVEHIST=$HISTSIZE
 setopt extended_history inc_append_history hist_ignore_dups hist_ignore_space hist_reduce_blanks
+# Up/Down skip a command they already showed, as fzf's Ctrl-R does.
+setopt hist_find_no_dups
 
-setopt interactive_comments no_beep
+# no_flow_control hands Ctrl-S and Ctrl-Q to the line editor instead of
+# freezing the terminal.
+setopt interactive_comments no_beep no_flow_control
 
 # Key bindings
 bindkey -e
@@ -40,7 +44,38 @@ bindkey '^[[F' end-of-line
 bindkey '^[[3~' delete-char
 bindkey '^[[1;5C' forward-word
 bindkey '^[[1;5D' backward-word
+bindkey '^[[1;3C' forward-word
+bindkey '^[[1;3D' backward-word
 bindkey '^X^E' edit-command-line
+
+# Word keys stop at slashes, so Ctrl/Alt+Backspace takes one path component.
+# Ctrl-W still takes everything back to the last space, like bash's.
+WORDCHARS=${WORDCHARS//\/}
+autoload -Uz backward-kill-word-match
+zle -N backward-kill-space-word backward-kill-word-match
+zstyle ':zle:backward-kill-space-word' word-style whitespace
+bindkey '^W' backward-kill-space-word
+bindkey '^H' backward-kill-word   # Ctrl+Backspace
+bindkey '^[[3;5~' kill-word       # Ctrl+Delete
+
+# Ctrl-Z on an empty line brings the last suspended job back, so it toggles
+# an editor in and out. With text on the line, it parks that text until the
+# next prompt.
+_dotfiles_ctrl_z() {
+  if [[ -z $BUFFER ]]; then
+    (( ${#jobstates} )) || return 0
+    BUFFER=' fg'
+    zle accept-line
+  else
+    zle push-input
+  fi
+}
+zle -N _dotfiles_ctrl_z
+bindkey '^Z' _dotfiles_ctrl_z
+
+# Quote a pasted URL, so its ? and & don't trip "no matches found".
+autoload -Uz bracketed-paste-url-magic
+zle -N bracketed-paste bracketed-paste-url-magic
 
 # Completion. fzf-tab draws the menu, so zsh's own stays off.
 zstyle ':completion:*' matcher-list 'm:{a-zA-Z}={A-Za-z}'
@@ -49,6 +84,9 @@ zstyle ':completion:*' menu no
 zstyle ':completion:*' rehash true
 zstyle ':completion:*:descriptions' format '[%d]'
 zstyle ':completion:*:git-checkout:*' sort false
+# Slow completers (pacman, systemctl units) reuse their last answer.
+zstyle ':completion:*' use-cache on
+zstyle ':completion:*' cache-path "${XDG_CACHE_HOME:-$HOME/.cache}/zsh/zcompcache"
 
 zcompdump="${XDG_CACHE_HOME:-$HOME/.cache}/zsh/zcompdump-$ZSH_VERSION"
 [[ -d ${zcompdump:h} ]] || mkdir -p "${zcompdump:h}"
@@ -69,7 +107,9 @@ zstyle ':fzf-tab:complete:(cd|zd|z):*' fzf-preview 'eza -1 --color=always --icon
 (( $+commands[zoxide] )) && eval "$(zoxide init zsh)"
 
 # Ctrl-R history, Ctrl-T files, Alt-C directories. Tab belongs to fzf-tab,
-# so fzf's own ** completion is left out.
+# so fzf's own ** completion is left out. The pickers preview like fzf-tab's.
+export FZF_CTRL_T_OPTS="--preview 'if [ -d {} ]; then eza -1 --color=always --icons=auto {}; else bat --style=numbers --color=always {}; fi'"
+export FZF_ALT_C_OPTS="--preview 'eza -1 --color=always --icons=auto {}'"
 [[ -r /usr/share/fzf/key-bindings.zsh ]] && source /usr/share/fzf/key-bindings.zsh
 
 if (( $+commands[try] )); then

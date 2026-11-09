@@ -34,7 +34,7 @@ enable_cursor_positioning = true
       style = 'full'
 
   [[blocks.segments]]
-    template = ' {{ .HEAD }}{{ if or (.Working.Changed) (.Staging.Changed) }}*{{ end }} <cyan>{{ if gt .Behind 0 }}⇣{{ end }}{{ if gt .Ahead 0 }}⇡{{ end }}</>'
+    template = ' {{ .HEAD }}{{ if or (.Working.Changed) (.Staging.Changed) }}*{{ end }}{{ if or (gt .Behind 0) (gt .Ahead 0) }} <cyan>{{ if gt .Behind 0 }}⇣{{ end }}{{ if gt .Ahead 0 }}⇡{{ end }}</>{{ end }}'
     foreground = 'p:grey'
     background = 'transparent'
     type = 'git'
@@ -48,7 +48,7 @@ enable_cursor_positioning = true
 
   # Bash has no right prompt. This is the old right-hand timer, on the path line.
   [[blocks.segments]]
-    template = '{{ .FormattedMs }}'
+    template = ' {{ .FormattedMs }}'
     foreground = 'yellow'
     background = 'transparent'
     type = 'executiontime'
