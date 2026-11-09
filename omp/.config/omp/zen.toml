@@ -3,6 +3,9 @@
 console_title_template = '{{ .Shell }} in {{ .Folder }}'
 version = 3
 final_space = true
+# Ask the terminal for the cursor row, so the first block's leading newline is
+# dropped when the prompt sits on the top line (after clear or Ctrl+L).
+enable_cursor_positioning = true
 
 [secondary_prompt]
   template = '❯❯ '

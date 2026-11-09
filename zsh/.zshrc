@@ -149,6 +149,17 @@ alias gcad='git commit -a --amend'
 (( $+commands[oh-my-posh] )) &&
   eval "$(oh-my-posh init zsh --config "${XDG_CONFIG_HOME:-$HOME/.config}/omp/zen.toml")"
 
+# Ctrl+L redraws the prompt without running precmd, so the blank line rendered
+# above it would survive the clear. Re-render it for the top row first.
+if (( $+functions[omp_repaint_prompt] )); then
+  _dotfiles_clear_screen() {
+    local -x POSH_CURSOR_LINE=1 POSH_CURSOR_COLUMN=1
+    eval "$(_omp_get_prompt primary --eval)"
+    zle .clear-screen
+  }
+  zle -N clear-screen _dotfiles_clear_screen
+fi
+
 # Grey inline suggestions from history; Right arrow or End accepts.
 [[ -r /usr/share/zsh/plugins/zsh-autosuggestions/zsh-autosuggestions.zsh ]] &&
   source /usr/share/zsh/plugins/zsh-autosuggestions/zsh-autosuggestions.zsh
