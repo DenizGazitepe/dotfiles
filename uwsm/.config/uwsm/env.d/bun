@@ -1,0 +1,11 @@
+# Put `bun add -g` CLIs on PATH for the whole Hyprland session: the app
+# launcher, every terminal, and the shells inside them. Bun keeps them under
+# $BUN_INSTALL, else $XDG_CACHE_HOME/.bun, else ~/.bun.
+# Omarchy's uwsm config points user env here; updates leave it alone.
+# Takes effect at the next login.
+bun_bin="${BUN_INSTALL:-${XDG_CACHE_HOME:-$HOME}/.bun}/bin"
+case ":$PATH:" in
+  *":$bun_bin:"*) ;;
+  *) export PATH="${PATH:+$PATH:}$bun_bin" ;;
+esac
+unset bun_bin

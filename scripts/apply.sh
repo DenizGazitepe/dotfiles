@@ -7,7 +7,7 @@ DOTFILES="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 cd "$DOTFILES"
 
 packages=()
-for name in bash git bat omp zsh hypr shell ghostty kitty foot alacritty superfile; do
+for name in bash git bat omp zsh uwsm hypr shell ghostty kitty foot alacritty superfile; do
   [[ -d $name ]] && packages+=("$name")
 done
 
