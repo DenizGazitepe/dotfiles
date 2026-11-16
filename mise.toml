@@ -1,0 +1,38 @@
+# Deploy these dotfiles into $HOME with `mise dot apply` (run from this repo).
+# Preview first with `mise dot diff` or `mise dot status`.
+
+[dotfiles]
+"~/.zshrc" = "zsh/.zshrc"
+"~/.config/git/config" = "git/.config/git/config"
+"~/.config/bat/config" = "bat/.config/bat/config"
+"~/.config/omp/zen.toml" = "omp/.config/omp/zen.toml"
+"~/.config/uwsm/env.d/bun" = "uwsm/.config/uwsm/env.d/bun"
+"~/.config/superfile/config.toml" = "superfile/.config/superfile/config.toml"
+"~/.config/omarchy/themed/superfile.toml.tpl" = "superfile/.config/omarchy/themed/superfile.toml.tpl"
+"~/.config/ghostty/dotfiles.conf" = "ghostty/.config/ghostty/dotfiles.conf"
+"~/.config/kitty/dotfiles.conf" = "kitty/.config/kitty/dotfiles.conf"
+"~/.config/foot/dotfiles.ini" = "foot/.config/foot/dotfiles.ini"
+"~/.config/alacritty/dotfiles.toml" = "alacritty/.config/alacritty/dotfiles.toml"
+
+# Omarchy owns the main terminal configs: font changes and migrations rewrite
+# them in place, and a refresh can replace one and drop the include. These
+# edits put the include back on every apply, after Omarchy's own settings so
+# the dotfiles ones win.
+"~/.config/ghostty/config/dotfiles" = { line = 'config-file = ?"~/.config/ghostty/dotfiles.conf"' }
+"~/.config/kitty/kitty.conf/dotfiles" = { line = "include ~/.config/kitty/dotfiles.conf" }
+# Foot reads keys under a section, so the include gets its own [main].
+# Foot only accepts # comments, so the block markers use them too.
+"~/.config/foot/foot.ini/dotfiles" = { comment = "#", block = """
+[main]
+include=~/.config/foot/dotfiles.ini
+""" }
+# Alacritty takes imports from a list that applies before the file itself.
+# A merge replaces the whole list, so it repeats Omarchy's theme import.
+"~/.config/alacritty/alacritty.toml/dotfiles" = { source = "alacritty/import.toml", merge = true }
+
+[bootstrap.hooks.post-dotfiles]
+run = [
+  "{{config_root}}/scripts/superfile-theme.sh",
+  "command -v hyprctl >/dev/null && hyprctl reload || true",
+  "command -v omarchy >/dev/null && omarchy restart terminal || true",
+]

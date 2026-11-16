@@ -1,0 +1,1 @@
+general.import = [ "~/.local/state/omarchy/current/theme/alacritty.toml", "~/.config/alacritty/dotfiles.toml" ]
