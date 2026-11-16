@@ -7,7 +7,8 @@ omarchy pkg aur add oh-my-posh
 
 # Zsh for terminals; bash stays Omarchy's login shell.
 omarchy pkg add zsh zsh-autosuggestions zsh-completions
-omarchy pkg aur add zsh-patina
+# Prebuilt upstream release binary; the source package compiles Rust on every update.
+omarchy pkg aur add zsh-patina-bin
 
 # fzf-tab's AUR package is stale, so keep a clone pinned to a release tag.
 fzf_tab_version=v1.3.0
