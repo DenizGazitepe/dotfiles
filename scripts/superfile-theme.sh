@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
+# Runs after `mise dot apply` as a post-dotfiles hook (see mise.toml).
 # Point superfile's "omarchy" theme at the file Omarchy renders from the
-# superfile stow package's template on every `omarchy theme set`. The template
+# superfile package's template on every `omarchy theme set`. The template
 # only renders on a theme change, so reapply the current theme (keeping its
 # background) when the rendered file is missing. Safe to rerun.
 set -euo pipefail
