@@ -7,7 +7,7 @@
 # layer (mise.omarchy.toml), once per machine:
 #   echo 'env = ["omarchy"]' > .miserc.toml
 # or per run with `MISE_ENV=omarchy`. The layer replaces entries here that
-# share a target, sets its own vars, and adds its hooks after these.
+# share a target and adds its hooks after these.
 
 # Zsh is the one package the system has to provide. Package managers this
 # machine doesn't have are skipped. Everything else comes from mise:
@@ -23,10 +23,6 @@
 "~/.local/share/zsh/plugins/zsh-autosuggestions" = { url = "https://github.com/zsh-users/zsh-autosuggestions", ref = "v0.7.1" }
 "~/.local/share/zsh/plugins/zsh-completions" = { url = "https://github.com/zsh-users/zsh-completions", ref = "0.36.0" }
 
-[vars]
-# Theme file under ~/.config/superfile/theme/.
-superfile_theme = "dotfiles"
-
 [dotfiles]
 # Global mise config, so the tools are on PATH everywhere, not just here.
 "~/.config/mise/conf.d/dotfiles.toml" = "mise/.config/mise/conf.d/dotfiles.toml"
@@ -34,9 +30,6 @@ superfile_theme = "dotfiles"
 "~/.config/git/config" = "git/.config/git/config"
 "~/.config/bat/config" = "bat/.config/bat/config"
 "~/.config/omp/zen.toml" = "omp/.config/omp/zen.toml"
-# Rendered, not linked: the theme name comes from vars.
-"~/.config/superfile/config.toml" = { source = "superfile/.config/superfile/config.toml", mode = "template" }
-"~/.config/superfile/theme/dotfiles.toml" = "superfile/.config/superfile/theme/dotfiles.toml"
 "~/.config/ghostty/dotfiles.conf" = "ghostty/.config/ghostty/dotfiles.conf"
 "~/.config/kitty/dotfiles.conf" = "kitty/.config/kitty/dotfiles.conf"
 "~/.config/foot/dotfiles.ini" = "foot/.config/foot/dotfiles.ini"
