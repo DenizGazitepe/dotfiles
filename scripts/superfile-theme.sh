@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Runs after `mise dot apply` as a post-dotfiles hook (see mise.toml).
+# Runs after `mise dot apply` as a post-dotfiles hook (see mise.omarchy.toml).
 # Point superfile's "omarchy" theme at the file Omarchy renders from the
 # superfile package's template on every `omarchy theme set`. The template
 # only renders on a theme change, so reapply the current theme (keeping its

@@ -1,5 +1,5 @@
-# Follow the active Omarchy theme. `omarchy theme set` recolors the
-# terminal's ANSI palette, and bat's ansi theme paints syntax with it.
+# Paint syntax with the terminal's ANSI palette, so bat follows the terminal
+# theme, including Omarchy's on `omarchy theme set`.
 --theme=ansi
 
 --italic-text=always

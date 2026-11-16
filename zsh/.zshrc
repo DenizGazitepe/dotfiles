@@ -1,21 +1,21 @@
-# Zsh for terminals. Ghostty starts it; bash stays Omarchy's stock login
-# shell. This repeats the interactive parts of Omarchy's bash rc
-# ($OMARCHY_PATH/default/bash) that are worth keeping.
+# Zsh for terminals. The terminals start it; the login shell stays the
+# system's. Tools come from mise (see ~/dotfiles/mise.toml).
 
 # Environment
-# The Hyprland session already exports OMARCHY_PATH and PATH; this covers a
-# zsh started from anywhere else.
-[[ -r /usr/share/omarchy/default/bash/env-bootstrap ]] &&
-  emulate sh -c '. /usr/share/omarchy/default/bash/env-bootstrap'
+# Machine-specific setup, such as the Omarchy layer's, goes first so the
+# defaults below can defer to it.
+for rc in "${XDG_CONFIG_HOME:-$HOME/.config}"/zsh/conf.d/*.zsh(N); do
+  source "$rc"
+done
+unset rc
 
 # CLIs from `bun add -g`. Bun keeps them under $BUN_INSTALL, else
 # $XDG_CACHE_HOME/.bun, else ~/.bun.
 typeset -U path
 path+=("${BUN_INSTALL:-${XDG_CACHE_HOME:-$HOME}/.bun}/bin")
 
-export EDITOR="${EDITOR:-omarchy-launch-editor --inline}"
+export EDITOR="${EDITOR:-nvim}"
 export SUDO_EDITOR="$EDITOR"
-export BROWSER="${BROWSER:-omarchy-launch-browser}"
 export MANROFFOPT="-c"
 export MANPAGER="sh -c 'col -bx | bat -l man -p'"
 
@@ -35,7 +35,7 @@ setopt interactive_comments no_beep no_flow_control
 # Key bindings
 bindkey -e
 
-# Up/Down match what you've typed so far against history (Omarchy's inputrc)
+# Up/Down match what you've typed so far against history
 autoload -Uz up-line-or-beginning-search down-line-or-beginning-search edit-command-line
 zle -N up-line-or-beginning-search
 zle -N down-line-or-beginning-search
@@ -93,6 +93,9 @@ zstyle ':completion:*:git-checkout:*' sort false
 zstyle ':completion:*' use-cache on
 zstyle ':completion:*' cache-path "${XDG_CACHE_HOME:-$HOME/.cache}/zsh/zcompcache"
 
+zsh_plugins="${XDG_DATA_HOME:-$HOME/.local/share}/zsh/plugins"
+fpath=("$zsh_plugins/zsh-completions/src" $fpath)
+
 zcompdump="${XDG_CACHE_HOME:-$HOME/.cache}/zsh/zcompdump-$ZSH_VERSION"
 [[ -d ${zcompdump:h} ]] || mkdir -p "${zcompdump:h}"
 autoload -Uz compinit
@@ -100,10 +103,7 @@ compinit -d "$zcompdump"
 unset zcompdump
 
 # fzf-tab loads after compinit and before anything that wraps widgets.
-# scripts/packages.sh clones it.
-fzf_tab="${XDG_DATA_HOME:-$HOME/.local/share}/zsh/plugins/fzf-tab/fzf-tab.plugin.zsh"
-[[ -r $fzf_tab ]] && source "$fzf_tab"
-unset fzf_tab
+[[ -r $zsh_plugins/fzf-tab/fzf-tab.plugin.zsh ]] && source "$zsh_plugins/fzf-tab/fzf-tab.plugin.zsh"
 zstyle ':fzf-tab:*' switch-group '<' '>'
 zstyle ':fzf-tab:complete:(cd|zd|z):*' fzf-preview 'eza -1 --color=always --icons=auto $realpath'
 
@@ -115,7 +115,9 @@ zstyle ':fzf-tab:complete:(cd|zd|z):*' fzf-preview 'eza -1 --color=always --icon
 # so fzf's own ** completion is left out. The pickers preview like fzf-tab's.
 export FZF_CTRL_T_OPTS="--preview 'if [ -d {} ]; then eza -1 --color=always --icons=auto {}; else bat --style=numbers --color=always {}; fi'"
 export FZF_ALT_C_OPTS="--preview 'eza -1 --color=always --icons=auto {}'"
-[[ -r /usr/share/fzf/key-bindings.zsh ]] && source /usr/share/fzf/key-bindings.zsh
+# `fzf --zsh` prints the key bindings, then the completion; keep the first.
+(( $+commands[fzf] )) &&
+  source <(fzf --zsh | sed '/^### end: key-bindings.zsh ###$/q')
 
 if (( $+commands[try] )); then
   try() {
@@ -172,7 +174,6 @@ alias ...='cd ../..'
 alias ....='cd ../../..'
 
 # Tools
-alias a='omarchy-agent --inline'
 alias c='opencode --auto'
 alias ca='cursor-agent --force --approve-mcps'
 alias cx='printf "\033[2J\033[3J\033[H" && claude --permission-mode auto'
@@ -206,8 +207,9 @@ if (( $+functions[omp_repaint_prompt] )); then
 fi
 
 # Grey inline suggestions from history; Right arrow or End accepts.
-[[ -r /usr/share/zsh/plugins/zsh-autosuggestions/zsh-autosuggestions.zsh ]] &&
-  source /usr/share/zsh/plugins/zsh-autosuggestions/zsh-autosuggestions.zsh
+[[ -r $zsh_plugins/zsh-autosuggestions/zsh-autosuggestions.zsh ]] &&
+  source "$zsh_plugins/zsh-autosuggestions/zsh-autosuggestions.zsh"
+unset zsh_plugins
 
 # Syntax highlighting goes last, as zsh-patina's README asks.
 (( $+commands[zsh-patina] )) && eval "$(zsh-patina activate)"
