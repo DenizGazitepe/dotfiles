@@ -1,45 +1,50 @@
 # Run from this repo:
-#   mise bootstrap   install the packages below, then deploy the dotfiles
+#   mise bootstrap   install what the dotfiles need, then deploy them
 #   mise dot apply   deploy the dotfiles only
 # Preview with `mise bootstrap plan` or `mise dot diff`.
+#
+# This file works on any Linux with mise. On Omarchy, also load the Omarchy
+# layer (mise.omarchy.toml), once per machine:
+#   echo 'env = ["omarchy"]' > .miserc.toml
+# or per run with `MISE_ENV=omarchy`. The layer replaces entries here that
+# share a target, sets its own vars, and adds its hooks after these.
 
-# What these dotfiles need. Installs missing packages; never upgrades them.
+# Zsh is the one package the system has to provide. Package managers this
+# machine doesn't have are skipped. Everything else comes from mise:
+# CLI tools from ~/.config/mise/conf.d/dotfiles.toml, zsh plugins below.
 [bootstrap.packages]
-"pacman:bat" = "latest"
-"pacman:git-delta" = "latest"
-"pacman:eza" = "latest"
-"pacman:fzf" = "latest"
-"pacman:zoxide" = "latest"
-"pacman:superfile" = "latest"
-"aur:oh-my-posh" = "latest"
-# Zsh for terminals; bash stays Omarchy's login shell.
 "pacman:zsh" = "latest"
-"pacman:zsh-autosuggestions" = "latest"
-"pacman:zsh-completions" = "latest"
-# Prebuilt upstream release binary; the source package compiles Rust on every update.
-"aur:zsh-patina-bin" = "latest"
+"apt:zsh" = "latest"
+"dnf:zsh" = "latest"
 
-# fzf-tab's AUR package is stale, so keep a clone pinned to a release tag.
+# Zsh plugins, pinned to release tags. .zshrc sources them from here.
 [bootstrap.repos]
 "~/.local/share/zsh/plugins/fzf-tab" = { url = "https://github.com/Aloxaf/fzf-tab", ref = "v1.3.0" }
+"~/.local/share/zsh/plugins/zsh-autosuggestions" = { url = "https://github.com/zsh-users/zsh-autosuggestions", ref = "v0.7.1" }
+"~/.local/share/zsh/plugins/zsh-completions" = { url = "https://github.com/zsh-users/zsh-completions", ref = "0.36.0" }
+
+[vars]
+# Theme file under ~/.config/superfile/theme/.
+superfile_theme = "dotfiles"
 
 [dotfiles]
+# Global mise config, so the tools are on PATH everywhere, not just here.
+"~/.config/mise/conf.d/dotfiles.toml" = "mise/.config/mise/conf.d/dotfiles.toml"
 "~/.zshrc" = "zsh/.zshrc"
 "~/.config/git/config" = "git/.config/git/config"
 "~/.config/bat/config" = "bat/.config/bat/config"
 "~/.config/omp/zen.toml" = "omp/.config/omp/zen.toml"
-"~/.config/uwsm/env.d/bun" = "uwsm/.config/uwsm/env.d/bun"
-"~/.config/superfile/config.toml" = "superfile/.config/superfile/config.toml"
-"~/.config/omarchy/themed/superfile.toml.tpl" = "superfile/.config/omarchy/themed/superfile.toml.tpl"
+# Rendered, not linked: the theme name comes from vars.
+"~/.config/superfile/config.toml" = { source = "superfile/.config/superfile/config.toml", mode = "template" }
+"~/.config/superfile/theme/dotfiles.toml" = "superfile/.config/superfile/theme/dotfiles.toml"
 "~/.config/ghostty/dotfiles.conf" = "ghostty/.config/ghostty/dotfiles.conf"
 "~/.config/kitty/dotfiles.conf" = "kitty/.config/kitty/dotfiles.conf"
 "~/.config/foot/dotfiles.ini" = "foot/.config/foot/dotfiles.ini"
 "~/.config/alacritty/dotfiles.toml" = "alacritty/.config/alacritty/dotfiles.toml"
 
-# Omarchy owns the main terminal configs: font changes and migrations rewrite
-# them in place, and a refresh can replace one and drop the include. These
-# edits put the include back on every apply, after Omarchy's own settings so
-# the dotfiles ones win.
+# The terminals' main configs stay the machine's own: these edits only add
+# an include for the files above, at the end so the dotfiles settings win.
+# A missing config is created holding just the include.
 "~/.config/ghostty/config/dotfiles" = { line = 'config-file = ?"~/.config/ghostty/dotfiles.conf"' }
 "~/.config/kitty/kitty.conf/dotfiles" = { line = "include ~/.config/kitty/dotfiles.conf" }
 # Foot reads keys under a section, so the include gets its own [main].
@@ -49,12 +54,5 @@
 include=~/.config/foot/dotfiles.ini
 """ }
 # Alacritty takes imports from a list that applies before the file itself.
-# A merge replaces the whole list, so it repeats Omarchy's theme import.
+# A merge replaces the whole list, so the Omarchy layer swaps in its own.
 "~/.config/alacritty/alacritty.toml/dotfiles" = { source = "alacritty/import.toml", merge = true }
-
-[bootstrap.hooks.post-dotfiles]
-run = [
-  "{{config_root}}/scripts/superfile-theme.sh",
-  "command -v hyprctl >/dev/null && hyprctl reload || true",
-  "command -v omarchy >/dev/null && omarchy restart terminal || true",
-]

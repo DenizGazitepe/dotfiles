@@ -1,0 +1,24 @@
+# Omarchy layer, loaded on top of mise.toml when MISE_ENV includes "omarchy"
+# (see the top of mise.toml). Everything that assumes Omarchy lives here.
+
+[vars]
+# Linked by scripts/superfile-theme.sh to the file Omarchy renders from the
+# template below.
+superfile_theme = "omarchy"
+
+[dotfiles]
+# Omarchy's session env, editor and browser launchers, and agent alias.
+"~/.config/zsh/conf.d/omarchy.zsh" = "omarchy/.config/zsh/conf.d/omarchy.zsh"
+"~/.config/uwsm/env.d/bun" = "omarchy/.config/uwsm/env.d/bun"
+"~/.config/omarchy/themed/superfile.toml.tpl" = "omarchy/.config/omarchy/themed/superfile.toml.tpl"
+# Same target as in mise.toml: also import the active Omarchy theme.
+"~/.config/alacritty/alacritty.toml/dotfiles" = { source = "omarchy/alacritty-import.toml", merge = true }
+
+# The reloads fail without a running Hyprland session (over SSH, say), and
+# that must not stop the bootstrap.
+[bootstrap.hooks.post-dotfiles]
+run = [
+  "{{config_root}}/scripts/superfile-theme.sh",
+  "hyprctl reload || true",
+  "omarchy restart terminal || true",
+]

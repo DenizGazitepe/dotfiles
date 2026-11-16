@@ -95,13 +95,13 @@ file_panel_name_percent = 50
 
 #-- Theme
 # Put your theme's name here!
-# "omarchy" is a link to the theme Omarchy renders from colors.toml on every
-# `omarchy theme set` (template: ~/.config/omarchy/themed/superfile.toml.tpl).
-theme = "omarchy"
+# A mise template: vars.superfile_theme is "dotfiles" (theme/dotfiles.toml,
+# painted with the terminal's palette), or "omarchy" in the Omarchy layer.
+theme = "{{ vars.superfile_theme }}"
 
 #-- Code Previewer
 # Whether to use the builtin syntax highlighting with chroma or use bat. Values: "" for builtin chroma, "bat" for bat
-# bat follows the Omarchy theme through the ansi theme in ~/.config/bat/config.
+# bat follows the terminal's palette through the ansi theme in ~/.config/bat/config.
 code_previewer = "bat"
 
 #-- Nerd Fonts Support

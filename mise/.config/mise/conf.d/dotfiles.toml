@@ -1,0 +1,11 @@
+# CLI tools the dotfiles use. mise reads conf.d/ as part of the global
+# config, so these are on PATH in every directory. Deployed by ~/dotfiles.
+[tools]
+bat = "latest"
+delta = "latest"
+eza = "latest"
+fzf = "latest"
+zoxide = "latest"
+superfile = "latest"
+oh-my-posh = "latest"
+"github:michel-kraemer/zsh-patina" = "latest"

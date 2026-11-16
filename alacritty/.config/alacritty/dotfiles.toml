@@ -1,6 +1,6 @@
-# Imported by Omarchy's ~/.config/alacritty/alacritty.toml
-# (scripts/terminal-includes.sh). Alacritty applies imports before the
-# importing file, so a key set in both places takes Omarchy's value.
+# Imported by ~/.config/alacritty/alacritty.toml (see mise.toml).
+# Alacritty applies imports before the importing file, so a key set in both
+# places takes that file's value.
 
 [terminal]
 # New windows run zsh. Launches with a command still run it directly.
