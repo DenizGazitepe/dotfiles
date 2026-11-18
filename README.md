@@ -35,6 +35,24 @@ mise bootstrap        # install everything, then deploy the dotfiles
 Open a new terminal afterwards. On Omarchy, the bun PATH change in
 `~/.config/uwsm/env.d/bun` takes effect at the next login.
 
+### Moving from the Stow setup
+
+A machine set up before the switch to mise has two leftovers that mise
+doesn't clean up. Run these once, before `mise bootstrap`:
+
+```sh
+# The old scripts added a foot include that mise's managed block would
+# duplicate. This deletes only that exact block.
+sed -i '/^# Settings owned by ~\/dotfiles; keep this last so they win$/{N;N;/\n\[main\]\ninclude=~\/\.config\/foot\/dotfiles\.ini$/d}' ~/.config/foot/foot.ini
+
+# Stow links to files the repo no longer has (superfile, for one). This
+# lists only dangling links into the repo; add -delete once the list looks right.
+find ~ -xdev -xtype l -lname '*dotfiles/*' -print
+```
+
+The old include lines in the Ghostty and kitty configs can stay: mise
+adopts them as they are.
+
 ### Day to day
 
 | Command               | What it does                                     |
