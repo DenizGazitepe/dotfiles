@@ -8,3 +8,16 @@ fzf = "latest"
 zoxide = "latest"
 oh-my-posh = "latest"
 "github:michel-kraemer/zsh-patina" = "latest"
+
+# GitHub release downloads crawl on some networks (~100 KB/s here, while
+# other hosts give 10+ MB/s). Claude Code is the one big download (170 MB),
+# so fetch it from Anthropic's own release bucket, the registry's second
+# backend for it, instead of GitHub. This also applies to Omarchy's claude.
+[tool_alias]
+claude = "http:claude"
+
+[settings]
+# Authenticate mise's GitHub API calls through git's credential helper,
+# which git/.config/git/config sets to `gh auth git-credential`. That lifts
+# the 60 requests/hour anonymous limit; it does not speed up downloads.
+github.use_git_credentials = true
